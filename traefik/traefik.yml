@@ -1,0 +1,33 @@
+log:
+  level: INFO
+
+entryPoints:
+  web:
+    address: ':80/tcp'
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: ':443/tcp'
+    http:
+        tls:
+          certResolver: letsencrypt
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      storage: /letsencrypt/acme.json
+      httpChallenge:
+        entryPoint: web
+
+providers:
+  docker:
+    watch: true
+    network: traefik
+    exposedByDefault: false
+
+serversTransport:
+  insecureSkipVerify: true
+
